@@ -7,7 +7,7 @@ import HowItWorksCarousel from '@/components/how-it-works-carousel';
 
 
 export const metadata = {
-  title: 'Nutri5 - HealthyChat | 24/7 AI Nutritionist',
+  title: 'Nutra | Guide your diet',
   description: 'Get instant nutrition guidance with our AI nutritionist. Fair access to healthcare for everyone, 24/7.',
 }
 

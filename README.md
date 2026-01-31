@@ -1,4 +1,4 @@
-# Nutri5 - HealthyChat
+# Nutra - HealthyChat
 
 > Equal access to nutrition guidance. No fees. No queues. Fair treatment for all.
 
@@ -6,7 +6,7 @@ A fullstack web application providing instant 24/7 nutrition guidance to underse
 
 ## 🌟 Overview
 
-**Nutri5 - HealthyChat** harnesses AI to deliver personalized dietary advice through conversational chat. Our mission is simple: make nutrition guidance accessible to everyone.
+**Nutra - HealthyChat** harnesses AI to deliver personalized dietary advice through conversational chat. Our mission is simple: make nutrition guidance accessible to everyone.
 
 ### The Problem
 - Malnutrition is a major health issue, especially in underserved areas
@@ -455,5 +455,6 @@ Help us make nutrition guidance accessible to everyone.
 *Equal access to nutrition guidance. No fees. No queues. Fair treatment for all.*
 
 v1.0.0 - January 2024 - Production Ready
-#   N u t r a  
+#   N u t r a 
+ 
  
