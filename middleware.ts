@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateSession } from './lib/supabase/proxy' 
 
-export const runtime = 'edge'
+export const runtime = 'experimental-edge';
 
 export const middleware = async (request: NextRequest) => {
   // Make sure env vars exist
