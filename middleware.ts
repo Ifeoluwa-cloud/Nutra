@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { updateSession } from './lib/supabase/proxy' 
 
-export const runtime = 'experimental-edge';
-
 export const middleware = async (request: NextRequest) => {
   // Make sure env vars exist
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
