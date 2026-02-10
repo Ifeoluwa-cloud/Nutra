@@ -10,7 +10,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { AlertCircle, Loader2 } from 'lucide-react'
+import { AlertCircle, Loader2, Github, Globe, Apple } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function SignUp() {
@@ -68,6 +68,31 @@ export default function SignUp() {
     }
   }
 
+  const handleOAuthSignIn = async (provider: 'google' | 'github' | 'apple') => {
+    setError(null)
+    setIsLoading(true)
+
+    try {
+      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      })
+
+      if (oauthError) {
+        console.error('OAuth signIn error:', oauthError)
+        setError(oauthError.message)
+      }
+    } catch (err) {
+      console.error('OAuth signIn failed:', err)
+      const message = err instanceof Error ? err.message : String(err)
+      setError(message || 'OAuth sign-in failed')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
@@ -104,7 +129,23 @@ export default function SignUp() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleSignUp} className="space-y-4">
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center justify-center gap-2">
+                  <Button onClick={() => handleOAuthSignIn('google')} className="w-full flex-1" aria-label="Sign in with Google">
+                    <Globe className="mr-2 h-4 w-4" /> Continue with Google
+                  </Button>
+                  <Button onClick={() => handleOAuthSignIn('github')} className="w-full flex-1" aria-label="Sign in with GitHub">
+                    <Github className="mr-2 h-4 w-4" /> Continue with GitHub
+                  </Button>
+                  <Button onClick={() => handleOAuthSignIn('apple')} className="w-full flex-1" aria-label="Sign in with Apple">
+                    <Apple className="mr-2 h-4 w-4" /> Continue with Apple
+                  </Button>
+                </div>
+                <div className="text-center text-sm text-muted-foreground">Or create an account with email</div>
+              </div>
+
+              <form onSubmit={handleSignUp} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
@@ -190,6 +231,7 @@ export default function SignUp() {
                 </Link>
               </p>
             </form>
+            </>
           )}
         </CardContent>
       </Card>
