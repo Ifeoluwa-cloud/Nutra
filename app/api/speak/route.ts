@@ -3,23 +3,18 @@ import { createClient } from '@/lib/supabase/server'
 export async function POST(request: Request) {
   const { text } = await request.json()
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return new Response('Unauthorized', { status: 401 })
-  }
-
+  // TTS is allowed without authentication for accessibility
+  // Users may be using text-only mode with GitHub API and should still get audio
+  
   try {
     const ELEVEN_KEY = process.env.ELEVEN_API_KEY
     const VOICE_ID = process.env.ELEVEN_VOICE_ID || 'alloy'
 
     if (!ELEVEN_KEY) {
-      // Fallback to the previous mock WAV response when no key available
+      console.log('[TTS] No ElevenLabs API key configured, using browser fallback')
+      // Return empty audio blob - client will fall back to browser speech synthesis
       const sampleRate = 8000
-      const duration = 1
+      const duration = 0.1 // minimal silent audio
       const samples = sampleRate * duration
       const audioBuffer = new ArrayBuffer(44 + samples * 2)
       const view = new DataView(audioBuffer)
@@ -58,6 +53,7 @@ export async function POST(request: Request) {
     // Call ElevenLabs Text-to-Speech
     const elevenUrl = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`
 
+    console.log('[TTS] Calling ElevenLabs with voice:', VOICE_ID)
     const elevenResp = await fetch(elevenUrl, {
       method: 'POST',
       headers: {
@@ -73,7 +69,7 @@ export async function POST(request: Request) {
 
     if (!elevenResp.ok) {
       const errText = await elevenResp.text().catch(() => '')
-      console.error('ElevenLabs TTS error:', elevenResp.status, errText)
+      console.error('[TTS] ElevenLabs error:', elevenResp.status, errText)
       return new Response('TTS provider error', { status: 502 })
     }
 

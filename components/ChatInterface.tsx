@@ -1,13 +1,24 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2, Phone, Volume2, VolumeX } from 'lucide-react'
+import { Send, Loader2, Phone, Volume2, VolumeX, Volume } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { VoiceConversation } from '@/components/VoiceConversation'
 import { useChat } from '@/contexts/ChatContext'
 import { useRouter } from 'next/navigation'
+
+// Strip markdown formatting from text
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/#{1,6}\s?/g, '') // Remove headings
+    .replace(/\*{1,2}(.+?)\*{1,2}/g, '$1') // Remove bold/italic
+    .replace(/`{1,3}(.+?)`{1,3}/g, '$1') // Remove code
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1') // Remove links
+    .replace(/[-_]{3,}/g, '') // Remove horizontal rules
+    .trim()
+}
 
 interface ChatMessage {
   id: string
@@ -24,21 +35,54 @@ interface ChatInterfaceProps {
 export function ChatInterface({ compact = false, className = '' }: ChatInterfaceProps) {
   const { messages, isLoading, isSpeaking, sendMessage, clearMessages, playAudioResponse, stopAudio } = useChat()
   const [inputValue, setInputValue] = useState('')
-  const [autoPlayEnabled, setAutoPlayEnabled] = useState(true)
+  const [autoPlayEnabled, setAutoPlayEnabled] = useState(false)
   const [preferTextMode, setPreferTextMode] = useState(false)
+  const [isVoiceActive, setIsVoiceActive] = useState(false)
+  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const processedMessagesRef = useRef<Set<string>>(new Set())
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current
-      setTimeout(() => {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight
-      }, 0)
+  const togglePlayAudio = async (messageId: string, text: string) => {
+    console.log('[ChatInterface] togglePlayAudio called with messageId:', messageId, 'isPlaying:', playingMessageId === messageId)
+    
+    if (playingMessageId === messageId) {
+      // Stop current audio
+      console.log('[ChatInterface] Stopping audio')
+      stopAudio()
+      setPlayingMessageId(null)
+    } else {
+      // Stop any currently playing audio
+      if (playingMessageId) {
+        stopAudio()
+      }
+      // Start playing new audio
+      console.log('[ChatInterface] Starting audio for message:', messageId)
+      setPlayingMessageId(messageId)
+      await playAudioResponse(text)
     }
+  }
+
+  // Reset playing message when audio stops
+  useEffect(() => {
+    if (!isSpeaking) {
+      setPlayingMessageId(null)
+    }
+  }, [isSpeaking])
+  useEffect(() => {
+    const scrollTimer = setTimeout(() => {
+      if (scrollAreaRef.current) {
+        // Get the scroll viewport container
+        const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement
+        if (viewport) {
+          // Scroll to the very bottom
+          viewport.scrollTop = viewport.scrollHeight
+        }
+      }
+    }, 50)
+    
+    return () => clearTimeout(scrollTimer)
   }, [messages])
 
   // Auto-play AI responses
@@ -192,14 +236,33 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
                     </svg>
                   </div>
                 )}
-                <div
-                  className={`rounded-2xl px-4 py-2 ${
-                    message.role === 'user'
-                      ? 'bg-primary text-primary-foreground rounded-tr-sm'
-                      : 'bg-secondary text-secondary-foreground rounded-tl-sm'
-                  }`}
-                >
-                  <p className="text-sm">{message.content}</p>
+                <div className="flex flex-col gap-2">
+                  <div
+                    className={`rounded-2xl px-4 py-2 ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground rounded-tr-sm'
+                        : 'bg-secondary text-secondary-foreground rounded-tl-sm'
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap break-words">{stripMarkdown(message.content)}</p>
+                  </div>
+                  {message.role === 'assistant' && (
+                    <button
+                      onClick={() => togglePlayAudio(message.id, message.content)}
+                      className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors -mt-0.5 ${
+                        playingMessageId === message.id
+                          ? 'text-primary bg-primary/20 hover:bg-primary/30'
+                          : 'text-primary hover:text-primary/80 hover:bg-primary/10'
+                      }`}
+                      title={playingMessageId === message.id ? 'Pause audio' : 'Play audio'}
+                    >
+                      {playingMessageId === message.id ? (
+                        <Volume2 className="w-4 h-4" />
+                      ) : (
+                        <Volume className="w-4 h-4" />
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -243,7 +306,7 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
       {/* Input Area */}
       <div className="px-4 py-3 border-t border-border/50 bg-card">
         <div className="flex items-center gap-2">
-          <VoiceConversation />
+          <VoiceConversation onStatusChange={setIsVoiceActive} />
           
           <div className="flex-1 relative">
             <Input
@@ -251,9 +314,9 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message or click mic to talk..."
+              placeholder={isVoiceActive ? "Mic is active - voice mode enabled" : "Type your message or click mic to talk..."}
               className="pr-12 rounded-full border-border/50 bg-secondary/50 focus:bg-background"
-              disabled={isLoading}
+              disabled={isLoading || isVoiceActive}
               aria-label="Message input"
             />
           </div>
@@ -262,7 +325,7 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
             size="icon"
             className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90"
             onClick={handleSend}
-            disabled={!inputValue.trim() || isLoading}
+            disabled={!inputValue.trim() || isLoading || isVoiceActive}
             aria-label="Send message"
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}

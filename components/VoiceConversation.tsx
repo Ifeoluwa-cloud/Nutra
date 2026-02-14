@@ -5,7 +5,7 @@ import { useConversation } from '@11labs/react'
 import { Mic, MicOff, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export function VoiceConversation() {
+export function VoiceConversation({ onStatusChange }: { onStatusChange?: (isActive: boolean) => void }) {
   const [hasPermission, setHasPermission] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [muted, setMuted] = useState(false)
@@ -13,6 +13,12 @@ export function VoiceConversation() {
 
   const conversation = useConversation()
   const { status } = conversation
+
+  // Notify parent when voice status changes
+  useEffect(() => {
+    const isActive = status === 'connected'
+    onStatusChange?.(isActive)
+  }, [status, onStatusChange])
 
   // Request microphone permission on mount
   useEffect(() => {

@@ -281,64 +281,95 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const playAudioResponse = useCallback(async (text: string) => {
+    console.log('[AUDIO] playAudioResponse called with text length:', text.length)
+    if (!text || !text.trim()) {
+      console.log('[AUDIO] Text is empty, skipping')
+      return
+    }
+
     try {
+      // Check if browser supports speech synthesis
+      if (!window.speechSynthesis) {
+        console.error('[AUDIO] Speech Synthesis API not supported in this browser')
+        setIsSpeaking(false)
+        return
+      }
+
+      // Don't interrupt if already speaking - just do nothing
+      if (window.speechSynthesis.speaking) {
+        console.log('[AUDIO] Speech already in progress, ignoring request')
+        return
+      }
+
+      console.log('[AUDIO] Using browser SpeechSynthesis API')
+      console.log('[AUDIO] Browser voice support:', window.speechSynthesis.getVoices().length, 'voices available')
+      
       setIsSpeaking(true)
-      const response = await fetch('/api/speak', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text }),
-      })
 
-      if (!response.ok) {
-        const details = await response.text().catch(() => '')
-        console.error('TTS server error', response.status, details)
+      // Clean text - remove extra whitespace
+      const cleanText = text.trim()
+        .replace(/[\n\r]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .slice(0, 1000) // Limit to 1000 chars for better stability
 
-        // Fallback: attempt to use browser SpeechSynthesis to speak directly
-        try {
-          const utter = new SpeechSynthesisUtterance(text)
-          window.speechSynthesis.cancel()
-          window.speechSynthesis.speak(utter)
-          // keep isSpeaking until utterance ends
-          utter.onend = () => setIsSpeaking(false)
-          return
-        } catch (synthErr) {
-          console.error('SpeechSynthesis fallback failed', synthErr)
-        }
+      console.log('[AUDIO] Clean text length:', cleanText.length)
+      console.log('[AUDIO] Text preview:', cleanText.substring(0, 100))
 
-        throw new Error('Failed to generate speech')
-      }
+      // Detect language from text
+      const detectedLang = text.includes('¡') || text.includes('é') ? 'es-ES' : 'en-US'
+      console.log('[AUDIO] Detected language:', detectedLang)
 
-      const audioBlob = await response.blob()
-      const audioUrl = URL.createObjectURL(audioBlob)
+      const utter = new SpeechSynthesisUtterance(cleanText)
+      utter.rate = 0.9
+      utter.pitch = 1.0
+      utter.volume = 1.0
+      utter.lang = detectedLang
       
-      if (!audioRef.current) {
-        audioRef.current = new Audio()
+      // Get voices that match the language
+      const voices = window.speechSynthesis.getVoices()
+      const langVoices = voices.filter(v => v.lang.startsWith(detectedLang.split('-')[0]))
+      if (langVoices.length > 0) {
+        utter.voice = langVoices[0]
+        console.log('[AUDIO] Using voice:', langVoices[0].name, 'for language:', detectedLang)
+      } else if (voices.length > 0) {
+        utter.voice = voices[0]
+        console.log('[AUDIO] No matching language voice, using default:', voices[0].name)
       }
       
-      audioRef.current.src = audioUrl
-      audioRef.current.onended = () => setIsSpeaking(false)
-      await audioRef.current.play()
+      console.log('[AUDIO] Starting speech synthesis')
+      const spoke = window.speechSynthesis.speak(utter)
+      console.log('[AUDIO] Speak called, returned:', spoke)
+      
+      utter.onstart = () => {
+        console.log('[AUDIO] Speech started')
+        setIsSpeaking(true)
+      }
+      utter.onend = () => {
+        console.log('[AUDIO] Speech ended normally')
+        setIsSpeaking(false)
+      }
+      utter.onerror = (e) => {
+        console.error('[AUDIO] Speech synthesis error event triggered')
+        console.error('[AUDIO] Error details:', e?.error || 'unknown error')
+        console.error('[AUDIO] Text was:', cleanText.slice(0, 100))
+        console.log('[AUDIO] Continuing anyway...')
+        setIsSpeaking(false)
+      }
     } catch (error) {
-      console.error('Failed to play audio:', error)
-      // try SpeechSynthesis as last-resort fallback
-      try {
-        const utter = new SpeechSynthesisUtterance(text)
-        window.speechSynthesis.cancel()
-        window.speechSynthesis.speak(utter)
-      } catch (synthErr) {
-        console.error('SpeechSynthesis final fallback failed', synthErr)
-      }
+      console.error('[AUDIO] Error in playAudioResponse:', error)
       setIsSpeaking(false)
     }
   }, [])
 
   const stopAudio = useCallback(() => {
+    console.log('[AUDIO] stopAudio called')
+    // Stop audio file playback
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current.currentTime = 0
     }
+    // Stop speech synthesis
+    window.speechSynthesis.cancel()
     setIsSpeaking(false)
   }, [])
 
