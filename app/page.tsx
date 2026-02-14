@@ -44,7 +44,7 @@ export default function Home() {
             <Link href="/auth/sign-up">Start Chatting Now →</Link>
           </Button>
           <Button asChild variant="outline" size="lg"  className="text-lg px-8 h-14">
-            <Link href="#how-it-works">Contact us</Link>
+            <Link href="#how-it-works">How It Works</Link>
           </Button>
         </div>
 
@@ -125,74 +125,96 @@ export default function Home() {
         </div>
       </section>
 
-      
-      {/* Contact Section */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Get in Touch</h2>
-            <p className="text-lg text-muted-foreground">
-              Have questions or feedback? We'd love to hear from you. Reach out to our team anytime.
-            </p>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12 bg-background rounded-xl p-8 border border-border">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Email Support</h3>
-              <Link href="mailto:support@nutri5.com" className="text-teal-600 hover:text-teal-700 font-medium text-lg">
-                support@nutri5.com
-              </Link>
-            </div>
             
+      {/* Contact Section */}
+      <section className="relative py-20 md:py-28 bg-mint dark:bg-background dot-grid-light">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left Form */}
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-4 text-center md:text-right">Follow Us</h3>
-              <div className="flex gap-6">
-                <Link href="https://twitter.com/nutri5" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-teal-600 transition" title="Twitter">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 2H1l8.26 11.35L1.45 22H4.1l6.46-7.41L21 22h7L12.55 9.64 20.16 2h-3.66l-5.36 6.21L8 2zm9.6 16.2h2L7.07 3.72h-2.3L17.6 18.2z"/></svg>
-                </Link>
-                <Link href="https://facebook.com/nutri5" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-teal-600 transition" title="Facebook">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                </Link>
-                <Link href="https://instagram.com/nutri5" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-teal-600 transition" title="Instagram">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="4" ry="4" fill="none" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.5"/><circle cx="17" cy="7" r="1" fill="currentColor"/></svg>
-                </Link>
-                <Link href="https://linkedin.com/company/nutri5" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-teal-600 transition" title="LinkedIn">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.722-2.004 1.418-.103.249-.129.597-.129.946v5.441h-3.554s.047-8.842 0-9.769h3.554v1.381c-.009.015-.021.029-.031.042h.031v-.042c.43-.664 1.195-1.612 2.905-1.612 2.122 0 3.714 1.388 3.714 4.375v5.625zM5.337 8.855c-1.144 0-1.915-.759-1.915-1.71 0-.955.771-1.71 1.958-1.71 1.187 0 1.914.755 1.938 1.71 0 .951-.751 1.71-1.981 1.71zm1.581 11.597H3.715V9.683h3.203v10.769zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
-                </Link>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Start your free chat.
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Try NutriCare AI in seconds. Prefer to talk to our team? 
+                Send a message and we'll reply within one business day.
+              </p>
+
+              <form className="space-y-5">
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      placeholder="Your Name"
+                      className="px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <input
+                      type="email"
+                      placeholder="Your Email"
+                      className="px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    placeholder="Subject"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <textarea
+                    placeholder="Your Message"
+                    rows={5}
+                    className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600 resize-none"
+                  />
+                </div>
+
+                <div>
+                  <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white">
+                    Send Message
+                  </Button>
+                </div>
+              </form>
+
+              <p className="text-xs text-center text-muted-foreground mt-4">
+                By reaching out, you agree to our Privacy Policy.
+              </p>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative hidden lg:block">
+              <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/10 rounded-full blur-2xl" />
+              <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-emerald-300/20 rounded-full blur-3xl" />
+              
+              <div className="relative rounded-3xl overflow-hidden shadow-card">
+                <img
+                  src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&h=700&fit=crop&crop=faces"
+                  alt="Person starting their nutrition journey"
+                  className="w-full aspect-[4/5] object-cover"
+                />
+              </div>
+
+              {/* Floating stats card */}
+              <div className="absolute -bottom-6 -left-6 bg-card rounded-2xl shadow-card p-5 border border-border/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-6 h-6 text-primary" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M12 2v20M2 12h20" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">10k+</p>
+                    <p className="text-sm text-muted-foreground">Active users</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="bg-muted/30 rounded-xl p-8 md:p-12 border border-border">
-            <h3 className="text-2xl font-bold text-foreground mb-6">Send us a Message</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  className="px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
-                />
-                <input
-                  type="email"
-                  placeholder="Your Email"
-                  className="px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
-                />
-              </div>
-              <input
-                type="text"
-                placeholder="Subject"
-                className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
-              />
-              <textarea
-                placeholder="Your Message"
-                rows={5}
-                className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600 resize-none"
-              ></textarea>
-              <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white">
-                Send Message
-              </Button>
-            </form>
           </div>
         </div>
       </section>
@@ -209,7 +231,7 @@ export default function Home() {
               alt="Nutri logo"
               width={44}
               height={44}
-              className="rounded-full"
+              className="rounded-full w-11 h-11 object-contain"
             />
           </Link>
               <span>Nutra</span>

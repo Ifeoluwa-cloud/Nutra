@@ -21,6 +21,7 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [showEmailForm, setShowEmailForm] = useState(false)
   const supabase = createClient()
   const router = useRouter()
 
@@ -95,25 +96,25 @@ export default function SignUp() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-2">
-          <div className="flex items-center justify-center mb-4">
+      <Card className="w-full max-w-md max-h-[calc(100vh-2rem)] overflow-y-auto">
+        <CardHeader className="space-y-1 text-center pb-3">
+          <div className="flex items-center justify-center mb-2">
             <Link href="/" className="flex items-center gap-2">
             <Image
               src="/nutra-logo.png"
               alt="Nutri logo"
-              width={44}
-              height={44}
-              className="rounded-full"
+              width={40}
+              height={40}
+              className="rounded-full w-10 h-10 object-contain"
             />
           </Link>
           </div>
-          <CardTitle className="text-center text-2xl">Create Account</CardTitle>
-          <CardDescription className="text-center">
+          <CardTitle className="text-xl">Create Account</CardTitle>
+          <CardDescription className="text-xs">
             Join Nutra and get 24/7 nutrition guidance
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           {success ? (
             <div className="space-y-4 text-center">
               <div className="p-4 bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-lg">
@@ -130,22 +131,6 @@ export default function SignUp() {
             </div>
           ) : (
             <>
-              <div className="space-y-4">
-                <div className="flex items-center justify-center gap-2">
-                  <Button onClick={() => handleOAuthSignIn('google')} className="w-full flex-1" aria-label="Sign in with Google">
-                    <Globe className="mr-2 h-4 w-4" /> Continue with Google
-                  </Button>
-                  <Button onClick={() => handleOAuthSignIn('github')} className="w-full flex-1" aria-label="Sign in with GitHub">
-                    <Github className="mr-2 h-4 w-4" /> Continue with GitHub
-                  </Button>
-                  <Button onClick={() => handleOAuthSignIn('apple')} className="w-full flex-1" aria-label="Sign in with Apple">
-                    <Apple className="mr-2 h-4 w-4" /> Continue with Apple
-                  </Button>
-                </div>
-                <div className="text-center text-sm text-muted-foreground">Or create an account with email</div>
-              </div>
-
-              <form onSubmit={handleSignUp} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
@@ -153,84 +138,161 @@ export default function SignUp() {
                 </Alert>
               )}
 
-              <div className="space-y-2">
-                <label htmlFor="fullName" className="text-sm font-medium">
-                  Full Name
-                </label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="John Doe"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+              {!showEmailForm ? (
+                // Social Auth View
+                <>
+                  <div className="space-y-3">
+                    <Button 
+                      onClick={() => handleOAuthSignIn('google')} 
+                      variant="outline"
+                      className="w-full"
+                      disabled={isLoading}
+                    >
+                      <Globe className="mr-2 h-4 w-4" />
+                      Sign up with Google
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => handleOAuthSignIn('github')} 
+                      variant="outline"
+                      className="w-full"
+                      disabled={isLoading}
+                    >
+                      <Github className="mr-2 h-4 w-4" />
+                      Sign up with GitHub
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => handleOAuthSignIn('apple')} 
+                      variant="outline"
+                      className="w-full"
+                      disabled={isLoading}
+                    >
+                      <Apple className="mr-2 h-4 w-4" />
+                      Sign up with Apple
+                    </Button>
+                  </div>
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-border/50"></div>
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">Or</span>
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
-                  Password
-                </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+                  <Button 
+                    onClick={() => setShowEmailForm(true)}
+                    variant="secondary"
+                    className="w-full"
+                  >
+                    Sign up with Email
+                  </Button>
 
-              <div className="space-y-2">
-                <label htmlFor="confirmPassword" className="text-sm font-medium">
-                  Confirm Password
-                </label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+                  <p className="text-center text-sm text-muted-foreground">
+                    Already have an account?{' '}
+                    <Link href="/auth/login" className="text-teal-600 hover:underline font-medium">
+                      Sign in
+                    </Link>
+                  </p>
+                </>
+              ) : (
+                // Email Form View
+                <form onSubmit={handleSignUp} className="space-y-3">
+                  <div className="space-y-1">
+                    <label htmlFor="fullName" className="text-sm font-medium">
+                      Full Name
+                    </label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="John Doe"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="h-9"
+                    />
+                  </div>
 
-              <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating account...
-                  </>
-                ) : (
-                  'Create Account'
-                )}
-              </Button>
+                  <div className="space-y-1">
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Email
+                    </label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="h-9"
+                    />
+                  </div>
 
-              <p className="text-center text-sm text-muted-foreground">
-                Already have an account?{' '}
-                <Link href="/auth/login" className="text-teal-600 hover:underline font-medium">
-                  Sign in
-                </Link>
-              </p>
-            </form>
+                  <div className="space-y-1">
+                    <label htmlFor="password" className="text-sm font-medium">
+                      Password
+                    </label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="h-9"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label htmlFor="confirmPassword" className="text-sm font-medium">
+                      Confirm Password
+                    </label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      disabled={isLoading}
+                      className="h-9"
+                    />
+                  </div>
+
+                  <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 mt-2" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating account...
+                      </>
+                    ) : (
+                      'Create Account'
+                    )}
+                  </Button>
+
+                  <Button 
+                    type="button"
+                    variant="ghost"
+                    className="w-full text-xs h-8"
+                    onClick={() => setShowEmailForm(false)}
+                    disabled={isLoading}
+                  >
+                    Back to sign up options
+                  </Button>
+
+                  <p className="text-center text-sm text-muted-foreground">
+                    Already have an account?{' '}
+                    <Link href="/auth/login" className="text-teal-600 hover:underline font-medium">
+                      Sign in
+                    </Link>
+                  </p>
+                </form>
+              )}
             </>
           )}
         </CardContent>

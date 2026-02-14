@@ -1,11 +1,13 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2 } from 'lucide-react'
+import { Send, Loader2, Phone, Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { VoiceConversation } from '@/components/VoiceConversation'
 import { useChat } from '@/contexts/ChatContext'
+import { useRouter } from 'next/navigation'
 
 interface ChatMessage {
   id: string
@@ -20,10 +22,14 @@ interface ChatInterfaceProps {
 }
 
 export function ChatInterface({ compact = false, className = '' }: ChatInterfaceProps) {
-  const { messages, isLoading, sendMessage } = useChat()
+  const { messages, isLoading, isSpeaking, sendMessage, clearMessages, playAudioResponse, stopAudio } = useChat()
   const [inputValue, setInputValue] = useState('')
+  const [autoPlayEnabled, setAutoPlayEnabled] = useState(true)
+  const [preferTextMode, setPreferTextMode] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
+  const processedMessagesRef = useRef<Set<string>>(new Set())
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -35,12 +41,27 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
     }
   }, [messages])
 
+  // Auto-play AI responses
+  useEffect(() => {
+    if (autoPlayEnabled && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage.role === 'assistant' && !processedMessagesRef.current.has(lastMessage.id)) {
+        processedMessagesRef.current.add(lastMessage.id)
+        // Delay slightly to allow UI to update
+        setTimeout(() => {
+          playAudioResponse(lastMessage.content)
+        }, 500)
+      }
+    }
+  }, [messages, autoPlayEnabled, playAudioResponse])
+
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
 
     const message = inputValue
     setInputValue('')
-    await sendMessage(message)
+    console.log('[ChatInterface] Sending with preferTextMode:', preferTextMode)
+    await sendMessage(message, preferTextMode ? { mode: 'text', provider: 'github' } : undefined)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -50,31 +71,82 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
     }
   }
 
+  const handleEndChat = () => {
+    clearMessages()
+    stopAudio()
+    router.push('/')
+  }
+
   return (
     <div className={`flex flex-col h-full bg-background ${className}`}>
       {/* Chat Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-border/50 bg-card">
-        <div className="relative">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-card">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <svg
+                viewBox="0 0 24 24"
+                className="w-5 h-5 text-primary"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-card animate-pulse" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-sm">Nutra AI Nutritionist</h3>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+              {isSpeaking ? 'Talking now...' : 'Online now'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            size="icon"
+            variant={preferTextMode ? 'default' : 'ghost'}
+            onClick={() => setPreferTextMode(!preferTextMode)}
+            title={preferTextMode ? 'Switch to audio mode' : 'Switch to text-only mode'}
+            className="h-9 w-9"
+          >
             <svg
-              viewBox="0 0 24 24"
-              className="w-5 h-5 text-primary"
+              className="h-4 w-4"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.5"
+              viewBox="0 0 24 24"
             >
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
-              <path d="M12 6v6l4 2" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4v2m-6-2a2 2 0 11-4 0 2 2 0 014 0zM20 20a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-          </div>
-          <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-card animate-pulse" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-sm">Nutra AI Nutritionist</h3>
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-            Online now
-          </p>
+          </Button>
+          
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setAutoPlayEnabled(!autoPlayEnabled)}
+            title={autoPlayEnabled ? 'Disable voice' : 'Enable voice'}
+            className="h-9 w-9"
+          >
+            {autoPlayEnabled ? (
+              <Volume2 className="h-4 w-4 text-primary" />
+            ) : (
+              <VolumeX className="h-4 w-4 text-muted-foreground" />
+            )}
+          </Button>
+          
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={handleEndChat}
+            className="h-9 w-9 hover:text-destructive"
+            title="End chat"
+          >
+            <Phone className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -171,13 +243,15 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
       {/* Input Area */}
       <div className="px-4 py-3 border-t border-border/50 bg-card">
         <div className="flex items-center gap-2">
+          <VoiceConversation />
+          
           <div className="flex-1 relative">
             <Input
               ref={inputRef}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder="Type your message or click mic to talk..."
               className="pr-12 rounded-full border-border/50 bg-secondary/50 focus:bg-background"
               disabled={isLoading}
               aria-label="Message input"
@@ -196,7 +270,7 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
         </div>
 
         <p className="text-xs text-center text-muted-foreground mt-2">
-          Press Enter to send, Shift+Enter for new line
+          🎤 Click mic to have a live conversation • Type for text • End chat with ☎️ button
         </p>
       </div>
     </div>

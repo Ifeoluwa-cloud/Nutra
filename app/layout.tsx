@@ -50,7 +50,12 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans antialiased`}>
+      <body className={`font-sans antialiased`} suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{document && document.body && document.body.removeAttribute('cz-shortcut-listen');}catch(e){}",
+          }}
+        />
         <ThemeProvider>
           <ScrollRestoration />
           <Navbar />

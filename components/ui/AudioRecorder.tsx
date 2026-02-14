@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Mic, Square, RotateCcw, Loader2 } from 'lucide-react';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,9 @@ interface AudioRecorderProps {
 export function AudioRecorder({ onRecordingComplete }: AudioRecorderProps) {
   const { isRecording, audioBlob, duration, startRecording, stopRecording, resetRecording } = useAudioRecorder();
   const { sendAudioMessage, isLoading } = useChat();
+  const recognitionRef = useRef<any | null>(null)
+  const sentRef = useRef(false)
+  const [finalTranscript, setFinalTranscript] = useState('')
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -19,11 +22,71 @@ export function AudioRecorder({ onRecordingComplete }: AudioRecorderProps) {
   };
 
   const handleStartRecording = async () => {
+    sentRef.current = false
+    setFinalTranscript('')
     await startRecording();
+
+    // Start browser SpeechRecognition in parallel for live transcription
+    try {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition()
+        recognition.lang = 'en-US'
+        recognition.interimResults = true
+        recognition.maxAlternatives = 1
+
+        let interim = ''
+
+        recognition.onresult = (event: any) => {
+          let interimLocal = ''
+          let finalLocal = ''
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const res = event.results[i]
+            if (res.isFinal) {
+              finalLocal += res[0].transcript
+            } else {
+              interimLocal += res[0].transcript
+            }
+          }
+          interim = interimLocal
+          if (finalLocal) {
+            setFinalTranscript((prev) => (prev ? prev + ' ' + finalLocal : finalLocal))
+          }
+        }
+
+        recognition.onend = () => {
+          recognitionRef.current = null
+          // send when recognition ends
+          if (!sentRef.current) {
+            const textToSend = (finalTranscript && finalTranscript.trim()) ? finalTranscript : ''
+            if (textToSend) {
+              sendAudioMessage(textToSend)
+              sentRef.current = true
+            }
+          }
+        }
+
+        recognition.onerror = (e: any) => {
+          console.warn('SpeechRecognition error', e)
+        }
+
+        recognitionRef.current = recognition
+        recognition.start()
+      }
+    } catch (e) {
+      console.warn('Speech recognition start failed', e)
+    }
   };
 
   const handleStopRecording = async () => {
     stopRecording();
+    try {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+    } catch (e) {
+      // ignore
+    }
   };
 
   const handleSendRecording = async () => {
@@ -31,11 +94,12 @@ export function AudioRecorder({ onRecordingComplete }: AudioRecorderProps) {
       if (onRecordingComplete) {
         onRecordingComplete(audioBlob);
       } else {
-        // Convert audio blob to transcription or pass as encoded string
-        // For now, notify user that audio was recorded
-        await sendAudioMessage('(Audio message sent)');
+        // If speech recognition produced a transcript, send that, otherwise send a generic placeholder
+        const textToSend = finalTranscript && finalTranscript.trim() ? finalTranscript : '(Audio message sent)'
+        await sendAudioMessage(textToSend)
+        sentRef.current = true
       }
-      resetRecording();
+      resetRecording()
     }
   };
 
@@ -45,7 +109,7 @@ export function AudioRecorder({ onRecordingComplete }: AudioRecorderProps) {
 
   // Auto-send when recording stops and blob is available
   useEffect(() => {
-    if (audioBlob && !isRecording && !onRecordingComplete) {
+    if (audioBlob && !isRecording && !onRecordingComplete && !sentRef.current) {
       const timer = setTimeout(() => {
         handleSendRecording();
       }, 500);

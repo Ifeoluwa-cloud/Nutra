@@ -139,7 +139,7 @@ export function Navbar() {
               alt="Nutri logo"
               width={44}
               height={44}
-              className="rounded-full"
+              className="rounded-full w-11 h-11 object-contain"
             />
 
             <span className="text-xl font-bold text-foreground">Nutra</span>
