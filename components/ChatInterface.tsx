@@ -20,6 +20,15 @@ function stripMarkdown(text: string): string {
     .trim()
 }
 
+// Format timestamp to readable time
+function formatTime(date: Date): string {
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    hour12: true 
+  })
+}
+
 interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
@@ -236,7 +245,7 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
                     </svg>
                   </div>
                 )}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1.5">
                   <div
                     className={`rounded-2xl px-4 py-2 ${
                       message.role === 'user'
@@ -246,23 +255,26 @@ export function ChatInterface({ compact = false, className = '' }: ChatInterface
                   >
                     <p className="text-sm whitespace-pre-wrap break-words">{stripMarkdown(message.content)}</p>
                   </div>
-                  {message.role === 'assistant' && (
-                    <button
-                      onClick={() => togglePlayAudio(message.id, message.content)}
-                      className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors -mt-0.5 ${
-                        playingMessageId === message.id
-                          ? 'text-primary bg-primary/20 hover:bg-primary/30'
-                          : 'text-primary hover:text-primary/80 hover:bg-primary/10'
-                      }`}
-                      title={playingMessageId === message.id ? 'Pause audio' : 'Play audio'}
-                    >
-                      {playingMessageId === message.id ? (
-                        <Volume2 className="w-4 h-4" />
-                      ) : (
-                        <Volume className="w-4 h-4" />
-                      )}
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2 px-2">
+                    <p className="text-xs text-muted-foreground">{formatTime(message.timestamp)}</p>
+                    {message.role === 'assistant' && (
+                      <button
+                        onClick={() => togglePlayAudio(message.id, message.content)}
+                        className={`flex items-center justify-center w-5 h-5 rounded-full transition-colors ${
+                          playingMessageId === message.id
+                            ? 'text-primary bg-primary/20 hover:bg-primary/30'
+                            : 'text-primary hover:text-primary/80 hover:bg-primary/10'
+                        }`}
+                        title={playingMessageId === message.id ? 'Pause audio' : 'Play audio'}
+                      >
+                        {playingMessageId === message.id ? (
+                          <Volume2 className="w-3 h-3" />
+                        ) : (
+                          <Volume className="w-3 h-3" />
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

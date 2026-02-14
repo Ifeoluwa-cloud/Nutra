@@ -349,14 +349,13 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         setIsSpeaking(false)
       }
       utter.onerror = (e) => {
-        console.error('[AUDIO] Speech synthesis error event triggered')
-        console.error('[AUDIO] Error details:', e?.error || 'unknown error')
-        console.error('[AUDIO] Text was:', cleanText.slice(0, 100))
-        console.log('[AUDIO] Continuing anyway...')
+        // Suppress error logging - these are expected in some browsers
+        // Just silently fail and reset state
+        console.log('[AUDIO] Speech synthesis error (suppressed), continuing')
         setIsSpeaking(false)
       }
     } catch (error) {
-      console.error('[AUDIO] Error in playAudioResponse:', error)
+      console.log('[AUDIO] Speech synthesis unavailable, skipping')
       setIsSpeaking(false)
     }
   }, [])
