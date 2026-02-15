@@ -68,14 +68,14 @@ export default function Home() {
 
       {/* RIGHT */}
       <HeroRight>
-        <div className="aspect-square rounded-3xl overflow-hidden emerald-glow rotate-3 transition-transform hover:rotate-0 duration-500">
-          <img 
-            src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=1000" 
-            alt="Healthy Food" 
-            className="w-full h-full object-cover"
-          />
+      <div className="aspect-square rounded-3xl overflow-hidden emerald-glow rotate-3 transition-transform hover:rotate-0 duration-500 relative">
+        <Image 
+          src="/NutraHomeUI.png"
+          alt="Healthy Food"
+          fill
+          className="object-cover"
+        />
         </div>
-
         <div className="absolute -bottom-6 -left-6 glass-morphism p-6 rounded-2xl shadow-xl max-w-[200px] animate-bounce-slow">
           <Users className="text-primary w-8 h-8 mb-2" />
           <p className="font-bold text-sm">Personalized for you</p>
@@ -189,13 +189,14 @@ export default function Home() {
               <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/10 rounded-full blur-2xl" />
               <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-emerald-300/20 rounded-full blur-3xl" />
               
-              <div className="relative rounded-3xl overflow-hidden shadow-card">
-                <img
-                  src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&h=700&fit=crop&crop=faces"
-                  alt="Person starting their nutrition journey"
-                  className="w-full aspect-[4/5] object-cover"
-                />
-              </div>
+              <div className="relative rounded-3xl overflow-hidden shadow-card aspect-[4/5]">
+  <Image
+    src="/contactNutra.png"
+    alt="Person starting their nutrition journey"
+    fill
+    className="object-cover"
+  />
+</div>
 
               {/* Floating stats card */}
               <div className="absolute -bottom-6 -left-6 bg-card rounded-2xl shadow-card p-5 border border-border/50">
