@@ -22,18 +22,6 @@ const steps = [
   },
   {
     id: 2,
-    title: 'Meet Nora',
-    description: 'Start conversation naturally with AI',
-    skeleton: (
-      <div className="bg-muted rounded-lg p-3 flex-1 flex flex-col gap-2">
-        <div className="self-start h-6 bg-muted-foreground/20 rounded-full w-32"></div>
-        <div className="self-end h-6 bg-teal-600/20 rounded-full w-28"></div>
-        <div className="self-start h-6 bg-muted-foreground/20 rounded-full w-40"></div>
-      </div>
-    ),
-  },
-  {
-    id: 3,
     title: 'Use Audio/Text',
     description: 'Speak or type - choose your style',
     skeleton: (
@@ -47,6 +35,18 @@ const steps = [
           <div className="h-6 w-1 bg-teal-600/40 rounded"></div>
           <div className="h-5 w-1 bg-teal-600/40 rounded"></div>
         </div>
+      </div>
+    ),
+  },
+  {
+    id: 3,
+    title: 'Meet Nora',
+    description: 'Start conversation naturally with AI',
+    skeleton: (
+      <div className="bg-muted rounded-lg p-3 flex-1 flex flex-col gap-2">
+        <div className="self-start h-6 bg-muted-foreground/20 rounded-full w-32"></div>
+        <div className="self-end h-6 bg-teal-600/20 rounded-full w-28"></div>
+        <div className="self-start h-6 bg-muted-foreground/20 rounded-full w-40"></div>
       </div>
     ),
   },

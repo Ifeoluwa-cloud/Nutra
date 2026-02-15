@@ -26,9 +26,6 @@ export default function Home() {
 
       {/* LEFT */}
       <HeroLeft>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-6">
-                <span>🌱 AI HEALTHCARE</span>
-        </div>
         <h1 className="text-5xl md:text-7xl font-serif font-bold leading-tight mb-6">
           <span className="text-primary">Nutra</span> <br />
           Your 24/7 <br />
