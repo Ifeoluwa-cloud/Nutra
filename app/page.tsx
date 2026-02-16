@@ -70,7 +70,7 @@ export default function Home() {
       <HeroRight>
       <div className="aspect-square rounded-3xl overflow-hidden emerald-glow rotate-3 transition-transform hover:rotate-0 duration-500 relative">
         <Image 
-          src="/NutraHeroImage.png"
+          src="/NutraHomeImage.png"
           alt="Healthy Food"
           fill
           className="object-cover"
