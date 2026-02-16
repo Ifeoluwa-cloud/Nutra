@@ -97,10 +97,9 @@ export default function HowItWorksCarousel() {
 
       <div className="flex items-center justify-between gap-4">
         <Button
-          variant="outline"
+          variant="teal"
           size="icon"
           onClick={handlePrev}
-          className="text-foreground border-border hover:bg-muted bg-transparent"
         >
           <ChevronLeft className="w-5 h-5" />
         </Button>
@@ -121,10 +120,9 @@ export default function HowItWorksCarousel() {
         </div>
 
         <Button
-          variant="outline"
+          variant="teal"
           size="icon"
           onClick={handleNext}
-          className="text-foreground border-border hover:bg-muted bg-transparent"
         >
           <ChevronRight className="w-5 h-5" />
         </Button>

@@ -89,14 +89,14 @@ export function Navbar() {
                     document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
                   }
                 }}
-                className="block text-sm font-medium text-foreground hover:text-teal-600"
+                className="block text-lg font-semibold text-foreground hover:text-teal-600"
               >
                 How It Works
               </Link>
 
               <Link 
                 href="/auth/sign-up" 
-                className="block text-sm font-medium text-foreground hover:text-teal-600"
+                className="block text-lg font-semibold text-foreground hover:text-teal-600"
               >
                   Get Started
               </Link>
@@ -142,7 +142,7 @@ export function Navbar() {
               className="rounded-full object-contain"
             />
 
-            <span className="text-xl font-bold text-foreground">Nutra</span>
+            <span className="text-lg font-semibold text-foreground">Nutra</span>
           </Link>
 
           {/* Right Actions */}
@@ -165,7 +165,7 @@ export function Navbar() {
                   How It Works
                 </Link>
 
-                <Button asChild size="lg" className="text-sm font-medium px-2 emerald-glow h-8">
+                <Button asChild size="lg" variant="teal" className="text-sm font-medium px-2 emerald-glow h-8">
                   <Link href="/auth/sign-up">Get Started</Link>
                 </Button>
               </div>

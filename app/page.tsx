@@ -37,7 +37,7 @@ export default function Home() {
 
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Button asChild size="lg" className="text-lg px-8 emerald-glow h-14">
+          <Button asChild size="lg" variant="teal" className="text-lg px-8 emerald-glow h-14">
             <Link href="/auth/sign-up">Start Chatting Now →</Link>
           </Button>
           <Button asChild variant="outline" size="lg"  className="text-lg px-8 h-14">
