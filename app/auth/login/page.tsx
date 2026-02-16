@@ -79,9 +79,9 @@ export default function Login() {
               <Image
                 src="/nutra-logo.png"
                 alt="Nutri logo"
-                width={44}
-                height={44}
-                className="rounded-full w-11 h-11 object-contain"
+                width={64}
+                height={64}
+                className="rounded-full object-contain"
               />
             </Link>
           </div>
