@@ -190,13 +190,13 @@ export default function Home() {
               <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-emerald-300/20 rounded-full blur-3xl" />
               
               <div className="relative rounded-3xl overflow-hidden shadow-card aspect-[4/5]">
-  <Image
-    src="/ContactNutraImage.png"
-    alt="Person starting their nutrition journey"
-    fill
-    className="object-cover"
-  />
-</div>
+                <Image
+                  src="/ContactNutraImage.png"
+                  alt="Person starting their nutrition journey"
+                  fill
+                  className="object-cover"
+                />
+              </div>
 
               {/* Floating stats card */}
               <div className="absolute -bottom-6 -left-6 bg-card rounded-2xl shadow-card p-5 border border-border/50">
