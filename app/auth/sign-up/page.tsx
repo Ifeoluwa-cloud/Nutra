@@ -10,7 +10,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { AlertCircle, Loader2, Github, Globe, Apple } from 'lucide-react'
+import { AlertCircle, Loader2, Github, Globe} from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function SignUp() {
@@ -69,7 +69,7 @@ export default function SignUp() {
     }
   }
 
-  const handleOAuthSignIn = async (provider: 'google' | 'github' | 'apple') => {
+  const handleOAuthSignIn = async (provider: 'google' | 'github') => {
     setError(null)
     setIsLoading(true)
 
@@ -77,7 +77,7 @@ export default function SignUp() {
       const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: `${window.location.origin}/chat`,
         },
       })
 
@@ -102,7 +102,7 @@ export default function SignUp() {
             <Link href="/" className="flex items-center gap-2">
             <Image
               src="/nutra-logo.png"
-              alt="Nutri logo"
+              alt="Nutra logo"
               width={64}
               height={64}
               className="rounded-full object-contain"
@@ -160,16 +160,6 @@ export default function SignUp() {
                     >
                       <Github className="mr-2 h-4 w-4" />
                       Sign up with GitHub
-                    </Button>
-                    
-                    <Button 
-                      onClick={() => handleOAuthSignIn('apple')} 
-                      variant="outline"
-                      className="w-full"
-                      disabled={isLoading}
-                    >
-                      <Apple className="mr-2 h-4 w-4" />
-                      Sign up with Apple
                     </Button>
                   </div>
 

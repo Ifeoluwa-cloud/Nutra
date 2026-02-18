@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { ArrowRight, CheckCircle2, Heart, Shield, Sparkles, Users, Lock, } from "lucide-react";
 import { HeroLeft, HeroRight } from "@/components/HeroMotion";
 import HowItWorksCarousel from '@/components/how-it-works-carousel';
+import ContactForm from '@/components/ContactForm'
 
 
 export const metadata = {
@@ -27,9 +28,9 @@ export default function Home() {
       {/* LEFT */}
       <HeroLeft>
         <h1 className="text-5xl md:text-7xl font-serif font-bold leading-tight mb-6">
-          <span className="text-primary">Nutra</span> <br />
+          <span className="text-accent">Nutra</span> <br />
           Your 24/7 <br />
-          <span className="text-primary">Nutrition Care</span>
+          <span className="text-accent">Nutrition Care</span>
         </h1>
         <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
           Nutra AI provides 24/7 Instant, personalized diet guidance, anytime, anywhere to everyone. No consultation fees, no queues, just equal access for all.
@@ -137,47 +138,7 @@ export default function Home() {
                 Send a message and we'll reply within one business day.
               </p>
 
-              <form className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div className="space-y-2">
-                    <input
-                      type="text"
-                      placeholder="Your Name"
-                      className="px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <input
-                      type="email"
-                      placeholder="Your Email"
-                      className="px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Subject"
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <textarea
-                    placeholder="Your Message"
-                    rows={5}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-teal-600 resize-none"
-                  />
-                </div>
-
-                <div>
-                  <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 text-white">
-                    Send Message
-                  </Button>
-                </div>
-              </form>
+              <ContactForm />
 
               <p className="text-xs text-center text-muted-foreground mt-4">
                 By reaching out, you agree to our Privacy Policy.
