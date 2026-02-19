@@ -46,25 +46,28 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="mt-8 flex items-center gap-6">
-          <div className="flex -space-x-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="w-10 h-10 rounded-full border-2 border-background bg-secondary flex items-center justify-center overflow-hidden"
-              >
-                <img
-                  src={`https://i.pravatar.cc/40?img=${i + 10}`}
-                  alt="User"
-                />
-              </div>
-            ))}
-          </div>
+        <div className="mt-8 flex items-center gap-4 bg-muted/40 px-5 py-3 rounded-xl w-fit">
+        <div className="flex -space-x-2">
+          {["us", "fr", "es", "de", "ng"].map((code, i) => (
+            <img
+              key={i}
+              src={`https://flagcdn.com/w40/${code}.png`}
+              alt="Language Flag"
+              className="w-8 h-8 rounded-full border border-background shadow-sm"
+            />
+          ))}
+        </div>
 
-          <p className="text-sm text-muted-foreground font-medium">
-            Joined by <span className="text-foreground font-bold">2,000+</span> community members
+        <div>
+          <p className="text-sm font-medium">
+            Multi-Language AI Support
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Personalized nutrition guidance in 20+ global languages
           </p>
         </div>
+      </div>
+
       </HeroLeft>
 
       {/* RIGHT */}
