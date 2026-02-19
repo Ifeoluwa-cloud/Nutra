@@ -33,7 +33,7 @@ export default function Home() {
           <span className="text-accent">Nutrition Care</span>
         </h1>
         <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-          Nutra AI provides 24/7 Instant, personalized diet guidance, anytime, anywhere to everyone. No consultation fees, no queues, just equal access for all.
+          Nutra AI provides 24/7 Instant, personalized diet guidance to everyone. No appointment delay, just equal access for all.
         </p>
 
 
@@ -46,25 +46,31 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="mt-8 flex items-center gap-4 bg-muted/40 px-5 py-3 rounded-xl w-fit">
-        <div className="flex -space-x-2">
-          {["us", "fr", "es", "de", "ng"].map((code, i) => (
-            <img
-              key={i}
-              src={`https://flagcdn.com/w40/${code}.png`}
-              alt="Language Flag"
-              className="w-8 h-8 rounded-full border border-background shadow-sm"
-            />
-          ))}
-        </div>
+      <div className="mt-8 w-full hidden sm:block">
+        <div className="flex flex-col sm:flex-row items-center sm:items-center gap-3 sm:gap-4 bg-muted/40 px-5 py-4 rounded-xl sm:w-fit">
 
-        <div>
-          <p className="text-sm font-medium">
-            Multi-Language AI Support
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Personalized nutrition guidance in 20+ global languages
-          </p>
+          {/* Flags */}
+          <div className="flex -space-x-2 justify-center sm:justify-start">
+            {["us", "fr", "es", "de", "ng"].map((code, i) => (
+              <img
+                key={i}
+                src={`https://flagcdn.com/w40/${code}.png`}
+                alt="Language Flag"
+                className="w-8 h-8 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full border border-background shadow-sm"
+              />
+            ))}
+          </div>
+
+          {/* Text */}
+          <div className="text-center sm:text-left">
+            <p className="text-sm sm:text-base font-semibold">
+              20+ global languages
+            </p>
+            <p className="hidden sm:block text-xs sm:text-sm text-muted-foreground">
+              Nutra is accessible to everyone, everywhere.
+            </p>
+          </div>
+
         </div>
       </div>
 
@@ -72,26 +78,28 @@ export default function Home() {
 
       {/* RIGHT */}
       <HeroRight>
-      <div className="aspect-square rounded-3xl overflow-hidden emerald-glow rotate-3 transition-transform hover:rotate-0 duration-500 relative">
-        <Image 
-          src="/NutraHomeImage.png"
-          alt="Healthy Food"
-          fill
-          className="object-cover"
-        />
+        <div className="aspect-square rounded-3xl overflow-hidden emerald-glow rotate-3 transition-transform hover:rotate-0 duration-500 relative">
+          <Image 
+            src="/NutraHomeImage.png"
+            alt="Healthy Food"
+            fill
+            className="object-cover"
+          />
         </div>
-        <div className="absolute -bottom-6 -left-6 glass-morphism p-6 rounded-2xl shadow-xl max-w-[200px] animate-bounce-slow">
-          <Users className="text-primary w-8 h-8 mb-2" />
-          <p className="font-bold text-sm">Personalized for you</p>
-          <p className="text-xs text-primary text-muted-foreground">
+        
+        {/* Floating Stats Cards */}
+        <div className="absolute -bottom-6 -left-4 sm:-bottom-6 sm:-left-6 glass-morphism p-3 sm:p-6 rounded-2xl shadow-xl max-w-[140px] sm:max-w-[200px] animate-bounce-slow">
+          <Users className="text-primary w-6 sm:w-8 h-6 sm:h-8 mb-1 sm:mb-2" />
+          <p className="font-bold text-xs sm:text-sm">Personalized for you</p>
+          <p className="text-[10px] sm:text-xs text-primary text-muted-foreground">
             Tailored advice based on your health goals.
           </p>
         </div>
 
-        <div className="absolute -top-6 -right-6 glass-morphism p-6 rounded-2xl shadow-xl max-w-[200px] animate-float">
-          <Shield className="text-primary w-8 h-8 mb-2" />
-          <p className="font-bold text-sm">Safe diet for you</p>
-          <p className="text-xs text-primary text-muted-foreground">
+        <div className="absolute -top-6 -right-4 sm:-top-6 sm:-right-6 glass-morphism p-3 sm:p-6 rounded-2xl shadow-xl max-w-[140px] sm:max-w-[200px] animate-float">
+          <Shield className="text-primary w-6 sm:w-8 h-6 sm:h-8 mb-1 sm:mb-2" />
+          <p className="font-bold text-xs sm:text-sm">Safe diet for you</p>
+          <p className="text-[10px] sm:text-xs text-primary text-muted-foreground">
             24/7 guide for your diet without any complication.
           </p>
         </div>
@@ -106,7 +114,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-4">How It Works</h2>
           <p className="text-lg text-muted-foreground text-center mb-12">
-            Follow these simple steps to start your journey to better health with Nutri5
+            Follow these simple steps to start your journey to better health with Nutra
           </p>
 
           <HowItWorksCarousel /> {/* Use the imported HowItWorksCarousel component */}
